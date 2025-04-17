@@ -46,8 +46,12 @@ videoElement.src = 'https://storage.googleapis.com/interactive-media-ads/media/a
 // Mute button
 muteButton.textContent = '🔇';
 muteButton.addEventListener('click', () => {
-  videoElement.muted = !videoElement.muted;
-  muteButton.textContent = videoElement.muted ? '🔇' : '🔊';
+    if (adsManager) {
+        const currentVolume = adsManager.getVolume();
+        const isMuted = (currentVolume === 0);
+        adsManager.setVolume(isMuted ? 1 : 0);
+        muteButton.textContent = isMuted ? '🔊' : '🔇';
+    }
 });
 
 // Close button
@@ -136,6 +140,7 @@ imaScript.onload = () => {
         videoElement.style.zIndex = 'auto';
         videoElement.controls = true;
         closeButton.style.display = 'block';
+        muteButton.style.display = 'none';
         videoElement.play();
       });
     }
